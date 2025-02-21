@@ -7,7 +7,7 @@
  * @package    Link - molkuski
  * @author     misiektedi <michal@olkuski.com>
  * @version    1.0.0
- * @license    Proprietary License
+ * @license    MIT
  * @link       https://l.molkuski.com
  * @created    2025-02-16
  */
@@ -98,7 +98,7 @@ if ($redirectUrl) {
         <html lang="en">
             <head>
                 <meta charset='UTF-8'>
-                <title>Link nie istnieje</title>
+                <title>Link "/{$requestUri}" nie istnieje</title>
             </head>
 
             <body style='font-family: system-ui; background-color: #171717; color: #fff; padding: 20svh 10svw; display: flex; flex-direction: column; gap: 16px'>
