@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset='UTF-8'>
+        <title>Link "{(requestUri)}" nie istnieje</title>
+    </head>
+
+    <body style='font-family: system-ui; background-color: #030303; color: #fff; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 32px; height: 98svh;'>
+        <header>
+            <img src="{(linkToLogo)}" style="height: 25px;">
+        </header>
+
+        <main style='display: flex; flex-direction: column; justify-content: space-around; gap: 16px; margin: 24px 0;'>
+            <div style="font-size: 2rem; font-weight: bold;">
+                — Link "{(requestUri)}" <span style="background-color: rgba(209, 25, 25, 0.19); color:rgb(209, 25, 25);">nie istnieje</span>.
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; color: #dbb719">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#dbb719"><path d="M109-120q-11 0-20-5.5T75-140q-5-9-5.5-19.5T75-180l370-640q6-10 15.5-15t19.5-5q10 0 19.5 5t15.5 15l370 640q6 10 5.5 20.5T885-140q-5 9-14 14.5t-20 5.5H109Zm69-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm0-120q17 0 28.5-11.5T520-400v-120q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v120q0 17 11.5 28.5T480-360Zm0-100Z"/></svg>
+
+                Sprawdź, czy nie ma literówki w adresie URL i spróbuj ponownie.
+            </div>
+        </main>
+
+        <footer style='color: rgb(146, 146, 146);'>
+            {(copyrightFooter)}
+        </footer>
+    </body>
+</html>
