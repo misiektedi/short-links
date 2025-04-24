@@ -4,24 +4,22 @@
  *
  * A simple project to redirect users by short link specified in URL.
  *
- * @package    Link - molkuski
+ * @package    Links - molkuski
  * @author     misiektedi <michal@olkuski.com>
- * @version    1.1.0-2025.02
+ * @version    1.2.0-2025.04
  * @license    MIT
  * @link       https://l.molkuski.com
  * @created    2025-02-16
- * @modified   2025-02-22
+ * @modified   2025-04-24
  */
-declare(strict_types=1);
+declare( strict_types=1 );
 
 /**
- * Personalizable logo and footer
- * 
- * @var linkToLogo
- * @var copyrightFooter
+ * Program defines
  */
-$linkToLogo = 'https://molkuski.com/assets/molkuski-logo-white.svg';
-$copyrightFooter = '&copy; ' . date('Y') . ' - misiektedi';
+define( 'ML_NAME',      'Links - molkuski' );
+define( 'ML_VERSION',   '1.2.0-2025.04' );
+define( 'ML_AUTHOR',    'misiektedi <michal@olkuski.com>' );
 
 /**
  * Redirect function
@@ -29,27 +27,29 @@ $copyrightFooter = '&copy; ' . date('Y') . ' - misiektedi';
  * @param string location
  * @param integer responseCode
  */
-function redirect(string $location, int $responseCode = 301): void {
-    http_response_code($responseCode);
-    header('Location: ' . $location);
+function redirect( string $location, int $responseCode = 301 ): void {
+    http_response_code( $responseCode );
+    header( 'Location: ' . $location );
     exit();
 }
 
 /**
- * Function which returns view content
+ * Message displaying function
  * 
- * @param string name
- * @param array values
+ * @param string content
  */
-function view(string $name, array $values = []): string {
-    $newKeys = array_map(fn($key) => "{(" . $key . ")}", array_keys($values));
-    $newValues = array_combine($newKeys, array_values($values));
+function displayMessage( string $content ): void {
+    header( 'Content-Type: text/plain' );
 
-    $viewFileContent = file_get_contents(__DIR__ . '/views/' . $name . '.html');
+    $message        = PHP_EOL . str_repeat( ' ', 4 ) . $content . PHP_EOL;
 
-    $viewContent = strtr($viewFileContent, $newValues);
+    $message        .= PHP_EOL . '╭' . str_repeat( '╶', 48 ) . '╮';
+    $message        .= PHP_EOL . '╵ ' . ML_VERSION;
+    $message        .= PHP_EOL . '╵ ' . ML_AUTHOR;
+    $message        .= PHP_EOL . '╰' . str_repeat( '╶', 48 ) . '╯';
 
-    return $viewContent;
+    echo $message;
+    exit();
 }
 
 /**
@@ -94,32 +94,33 @@ class Model {
 $config = require_once __DIR__ . '/Config.php';
 
 try {
-    $pdo = new PDO($config['database_driver'] . ':host=' . $config['database_host'] . ';dbname=' . $config['database_name'], $config['database_user'], $config['database_password']);
+    $pdo = new PDO( $config['database_driver'] . ':host=' . $config['database_host'] . ';dbname=' . $config['database_name'], $config['database_user'], $config['database_password'] );
 } catch (PDOException $e) {
-    echo <<<HTML
-        Wystąpił błąd. Spróbuj ponownie później.
-    HTML;
+    displayMessage( content: 'Wystąpił błąd. Spróbuj ponownie później.' );
 }
 
 /**
  * Saving request uri into variable
  */
-$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$requestUri         = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ?? '/';
+
+/**
+ * About app endpoint
+ */
+if ( $requestUri === '/about' ) {
+    displayMessage( content: ML_NAME . str_repeat( ' ', 8 ) . ML_VERSION  . str_repeat( ' ', 8 ) . ML_AUTHOR);
+}
 
 /**
  * Fetching redirect location
  */
-$model = new Model($pdo);
-$redirectUrl = $model->getRedirectUrl($requestUri);
+$model              = new Model( $pdo );
+$redirectUrl        = $model->getRedirectUrl( $requestUri );
 
-if ($redirectUrl) {
-    $model->saveInHistory($redirectUrl);
+if ( $redirectUrl ) {
+    $model->saveInHistory( $redirectUrl );
 
-    redirect(location: $redirectUrl, responseCode: 301);
+    redirect( location: $redirectUrl, responseCode: 301 );
 } else {
-    echo view('link-not-exist', [
-        'requestUri' => $requestUri,
-        'copyrightFooter' => $copyrightFooter,
-        'linkToLogo' => $linkToLogo,
-    ]);
+    displayMessage( content: 'Podany link nie istnieje.' );
 }
